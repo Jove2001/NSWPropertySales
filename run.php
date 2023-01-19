@@ -15,10 +15,13 @@ use App\SQLiteConnection;
  * @ Ian McElwaine 2023
  */
 
-print("----------------------------------------\nThis script will convert the NSW property sales data files into an SQLite3 db\nWARNING: THIS MAY TAKE > 12HRS\nPress ctrl-c to escape this operation\n----------------------------------------\n");
+print("----------------------------------------\nThis script will convert the NSW property sales data files into an SQLite3 db\nWARNING: THIS MAY TAKE A LONG TIME!\nPress ctrl-c to escape this operation\n----------------------------------------\n");
 
 // Sales data years to import 
 $years = array("2020", "2021", "2022");
+
+// Get the db connection
+$pdo = (new SQLiteConnection())->connect();
 
 // Add each years data to db
 for ($a = 0; $a < sizeof($years); $a++) {
@@ -39,6 +42,8 @@ for ($a = 0; $a < sizeof($years); $a++) {
         for ($c = 0; $c < sizeof($data); $c++) {
             if ($data[$c][0] == "B") {
                 sendToDb(
+                    // Active db connection
+                    $pdo,
                     // Data file name for error handling
                     'data/' . $years[$a] . "/" . $dataFiles[$b],
                     // The year of the data
@@ -85,6 +90,7 @@ function getFileNames($year)
  * Insert data into db
  */
 function sendToDb(
+    $pdo,
     $datafileName,
     $year,
     $propertyId,
@@ -98,9 +104,6 @@ function sendToDb(
     $primaryPurpose,
     $dealingNumber
 ) {
-    // Get the connection
-    $pdo = (new SQLiteConnection())->connect();
-
     // Create the SQL statement
     $insert =
         "INSERT INTO `$year`

@@ -66,7 +66,7 @@ for ($a = 0; $a < sizeof($years); $a++) {
                 );
             }
         }
-        print(" - Done\n");
+        print("\n");
     }
 }
 

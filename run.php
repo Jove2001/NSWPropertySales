@@ -66,6 +66,7 @@ for ($a = 0; $a < sizeof($years); $a++) {
                 );
             }
         }
+        print(" - Done\n");
     }
 }
 
@@ -118,7 +119,6 @@ function sendToDb(
     // Execute statement
     try {
         $stmt = $pdo->exec($insert);
-        print(" - Done\n");
     } catch (PDOException $e) {
         print(" - ERROR INSERTING INTO DATABASE\n" . $e->getMessage() . "\nPlease check error.log\n");
         errorLog("Error processing " . $datafileName);

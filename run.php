@@ -39,6 +39,7 @@ for ($a = 0; $a < sizeof($years); $a++) {
         $data = csvToArray('data/' . $years[$a] . "/" . $dataFiles[$b]);
 
         // Find the 'B' records and add to db
+        // Refer to: https://www.valuergeneral.nsw.gov.au/__data/assets/pdf_file/0015/216402/Current_Property_Sales_Data_File_Format_2001_to_Current.pdf
         for ($c = 0; $c < sizeof($data); $c++) {
             if ($data[$c][0] == "B") {
                 sendToDb(

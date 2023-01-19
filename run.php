@@ -8,7 +8,7 @@ use App\SQLiteConnection;
  * This script adds NSW property sales data for 2020; 2021; 2022 to an SQLite3 db - db/NSWSalesData.db
  * Data downloaded from Valuer General NSW Valuation Portal: https://valuation.property.nsw.gov.au/embed/propertySalesInformation
  * 
- * WARNING: This operation may take over 12 hrs to complete!
+ * WARNING: This operation may take a long time!
  * 
  * This software is the original academic work of Ian McEwaine s3863018@student.rmit.edu.au
  * It has been prepared as market research material for COSC2454 Professional Computing Practice, RMIT University
@@ -39,6 +39,8 @@ for ($a = 0; $a < sizeof($years); $a++) {
         for ($c = 0; $c < sizeof($data); $c++) {
             if ($data[$c][0] == "B") {
                 sendToDb(
+                    // Data file name for error handling
+                    'data/' . $years[$a] . "/" . $dataFiles[$b],
                     // The year of the data
                     $years[$a],
                     // PropertyId
@@ -64,7 +66,6 @@ for ($a = 0; $a < sizeof($years); $a++) {
                 );
             }
         }
-        print(" - Done\n");
     }
 }
 
@@ -83,6 +84,7 @@ function getFileNames($year)
  * Insert data into db
  */
 function sendToDb(
+    $datafileName,
     $year,
     $propertyId,
     $propertyPostCode,
@@ -114,7 +116,14 @@ function sendToDb(
         '$dealingNumber')";
 
     // Execute statement
-    $stmt = $pdo->exec($insert);
+    try {
+        $stmt = $pdo->exec($insert);
+        print(" - Done\n");
+    } catch (PDOException $e) {
+        print(" - ERROR INSERTING INTO DATABASE\n" . $e->getMessage() . "\nPlease check error.log\n");
+        errorLog("Error processing " . $datafileName);
+        errorLog($e->getMessage());
+    }
 }
 
 /**
@@ -131,4 +140,14 @@ function csvToArray($csvFile)
     // Get rid of the boolean at the end
     array_pop($lines);
     return $lines;
+}
+
+/**
+ * Write error logs
+ */
+function errorLog($log)
+{
+    $errorLog = fopen("error.log", "a") or die("Unable to open file!");
+    fwrite($errorLog, $log);
+    fclose($errorLog);
 }

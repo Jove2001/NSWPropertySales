@@ -23,7 +23,7 @@ $years = array("2020", "2021", "2022");
 
 // Get the db connection
 $pdo = (new SQLiteConnection())->connect();
-$createTables = new SQLiteCreateTable((new SQLiteConnection())->connect());
+$createTables = new SQLiteCreateTable($pdo);
 
 // Create tables
 for ($i = 0; $i < 3; $i++) {
@@ -59,7 +59,7 @@ for ($a = 0; $a < sizeof($years); $a++) {
                     // PropertyId
                     $data[$c][2],
                     // PropertyLocality
-                    $data[$c][9],
+                    $pdo->quote($data[$c][9]),
                     // PropertyPostCode
                     $data[$c][10],
                     // Area
@@ -75,7 +75,7 @@ for ($a = 0; $a < sizeof($years); $a++) {
                     // NatureOfProperty
                     $data[$c][17],
                     // PrimaryPurpose
-                    $data[$c][18],
+                    $pdo->quote($data[$c][18]),
                     // PercentInterestOfSale
                     $data[$c][22],
                     // DealingNumber

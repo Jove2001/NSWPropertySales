@@ -45,22 +45,4 @@ class SQLiteCreateTable
 
         $this->pdo->exec($command);
     }
-
-    // /**
-    //  * get the table list in the database
-    //  */
-    // public function getTableList()
-    // {
-
-    //     $stmt = $this->pdo->query("SELECT name
-    //                                FROM sqlite_master
-    //                                WHERE type = 'table'
-    //                                ORDER BY name");
-    //     $tables = [];
-    //     while ($row = $stmt->fetch(\PDO::FETCH_ASSOC)) {
-    //         $tables[] = $row['name'];
-    //     }
-
-    //     return $tables;
-    // }
 }

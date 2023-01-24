@@ -3,6 +3,7 @@
 require 'vendor/autoload.php';
 
 use App\SQLiteConnection;
+use App\SQLiteCreateTable;
 
 /**
  * This script adds NSW property sales data for 2020; 2021; 2022 to an SQLite3 db - db/NSWSalesData.db
@@ -22,6 +23,12 @@ $years = array("2020", "2021", "2022");
 
 // Get the db connection
 $pdo = (new SQLiteConnection())->connect();
+$createTables = new SQLiteCreateTable((new SQLiteConnection())->connect());
+
+// Create tables
+for ($i = 0; $i < 3; $i++) {
+    $createTables->createTables($years[$i]);
+}
 
 // Add each years data to db
 for ($a = 0; $a < sizeof($years); $a++) {
@@ -51,6 +58,8 @@ for ($a = 0; $a < sizeof($years); $a++) {
                     $years[$a],
                     // PropertyId
                     $data[$c][2],
+                    // PropertyLocality
+                    $data[$c][9],
                     // PropertyPostCode
                     $data[$c][10],
                     // Area
@@ -67,6 +76,8 @@ for ($a = 0; $a < sizeof($years); $a++) {
                     $data[$c][17],
                     // PrimaryPurpose
                     $data[$c][18],
+                    // PercentInterestOfSale
+                    $data[$c][22],
                     // DealingNumber
                     $data[$c][23]
                 );
@@ -95,6 +106,7 @@ function sendToDb(
     $datafileName,
     $year,
     $propertyId,
+    $propertyLocality,
     $propertyPostCode,
     $area,
     $areaType,
@@ -103,6 +115,7 @@ function sendToDb(
     $purchasePrice,
     $natureOfProperty,
     $primaryPurpose,
+    $percentInterestOfSale,
     $dealingNumber
 ) {
     // Create the SQL statement
@@ -110,6 +123,7 @@ function sendToDb(
         "INSERT INTO `$year`
     VALUES (
         '$propertyId',
+        '$propertyLocality',
         '$propertyPostCode',
         '$area',
         '$areaType',
@@ -118,6 +132,7 @@ function sendToDb(
         '$purchasePrice',
         '$natureOfProperty',
         '$primaryPurpose',
+        '$percentInterestOfSale',
         '$dealingNumber')";
 
     // Execute statement

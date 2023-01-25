@@ -59,7 +59,7 @@ for ($a = 0; $a < sizeof($years); $a++) {
                     // PropertyId
                     $data[$c][2],
                     // PropertyLocality
-                    $pdo->quote($data[$c][9]),
+                    htmlspecialchars($data[$c][9]),
                     // PropertyPostCode
                     $data[$c][10],
                     // Area
@@ -75,7 +75,7 @@ for ($a = 0; $a < sizeof($years); $a++) {
                     // NatureOfProperty
                     $data[$c][17],
                     // PrimaryPurpose
-                    $pdo->quote($data[$c][18]),
+                    htmlspecialchars($data[$c][18]),
                     // PercentInterestOfSale
                     $data[$c][22],
                     // DealingNumber

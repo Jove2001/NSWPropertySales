@@ -4,7 +4,7 @@
 
 <p>WARNING: This operation may take a long time to complete!</p>
 <p>Needs PHP installed</p>
-<p>Create the database file with <code>php createdatabase.php</code></p>
+<p>Create the database file with <code>php createdb.php</code></p>
 
 This software is the original academic work of Ian McEwaine s3863018@student.rmit.edu.au<br>
 It has been prepared as market research material for COSC2454 Professional Computing Practice, RMIT University<br>

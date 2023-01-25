@@ -23,6 +23,9 @@ print("----------------------------------------\nNSW Property Sales Records 2017
 // Sales data years to import 
 $years = array("2017", "2018", "2019", "2020", "2021", "2022");
 
+// Create dir for db
+if (!file_exists("db")) mkdir("db");
+
 // Get the db connection
 $pdo = (new SQLiteConnection())->connect();
 
@@ -30,7 +33,7 @@ $pdo = (new SQLiteConnection())->connect();
 (new SQLiteCreateTable($pdo))->createTable();
 
 // Initialise log file
-$logfile = fopen("db.log", "w") or die("Unable to open file!");
+$logfile = fopen("createdb.log", "w") or die("Unable to open file!");
 fwrite($logfile, "DataFilePath,DealingNumber,PropertyId,ContractDate,SettlementDate,PurchasePrice\n");
 fclose($logfile);
 
@@ -167,7 +170,7 @@ function csvToArray($csvFile)
  */
 function logWriter($log)
 {
-    $logfile = fopen("db.log", "a") or die("Unable to open file!");
+    $logfile = fopen("createdb.log", "a") or die("Unable to open file!");
     fwrite($logfile, $log);
     fclose($logfile);
 }

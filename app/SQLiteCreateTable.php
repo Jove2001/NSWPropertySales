@@ -30,7 +30,7 @@ class SQLiteCreateTable
     {
         $command =
             'CREATE TABLE IF NOT EXISTS `' . $year . '` (
-                        PropertyId TEXT NOT NULL,
+                        PropertyId TEXT PRIMARY KEY,
                         PropertyLocality TEXT NOT NULL,
                         PropertyPostCode INTEGER NOT NULL,
                         Area REAL,

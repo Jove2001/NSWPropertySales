@@ -141,9 +141,8 @@ function sendToDb(
     try {
         $stmt = $pdo->exec($insert);
     } catch (PDOException $e) {
-        print(" - ERROR INSERTING INTO DATABASE\n" . $e->getMessage() . "\nPlease check error.log\n");
-        errorLog("Error processing " . $datafileName);
-        errorLog($e->getMessage());
+        print("\n$datafileName - DUPLICATE RECORD FOUND for $dealingNumber - Check db.log");
+        log($datafileName.",". $dealingNumber."," . $propertyId."\n");
     }
 }
 
@@ -166,9 +165,9 @@ function csvToArray($csvFile)
 /**
  * Write error logs
  */
-function errorLog($log)
+function log($log)
 {
-    $errorLog = fopen("error.log", "a") or die("Unable to open file!");
-    fwrite($errorLog, $log);
-    fclose($errorLog);
+    $log = fopen("db.log", "a") or die("Unable to open file!");
+    fwrite($log, $log);
+    fclose($log);
 }

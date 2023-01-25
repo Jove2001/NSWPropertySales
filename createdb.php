@@ -18,7 +18,10 @@ use App\SQLiteCreateTable;
  * @ Ian McElwaine 2023
  */
 
-print("----------------------------------------\nNSW Property Sales Records 2017-2022\n\nThis script converts the NSW property sales\ndata files into an SQLite3 db\nWARNING: THIS WILL TAKE A LONG TIME!\nPress ctrl-c to escape this operation\n----------------------------------------\n");
+// Get program start time
+$startTime = date_create_from_format("U", time());
+
+print("----------------------------------------\nNSW Property Sales Records 2017-2022\n\nThis script converts the NSW property sales\ndata files into an SQLite3 db\n\nWARNING: THIS WILL TAKE A LONG TIME!\n\nPress ctrl-c to escape this operation\n----------------------------------------\n");
 
 // Sales data years to import 
 $years = array("2017", "2018", "2019", "2020", "2021", "2022");
@@ -37,6 +40,21 @@ $logfile = fopen("createdb.log", "w") or die("Unable to open file!");
 fwrite($logfile, "DataFilePath,DealingNumber,PropertyId,ContractDate,SettlementDate,PurchasePrice\n");
 fclose($logfile);
 
+// Total number of data files
+$numOfFiles = 0;
+
+// Find total number of data files
+for ($a = 0; $a < sizeof($years); $a++) {
+    $dataFiles = getFileNames($years[$a]);
+    $numOfFiles = $numOfFiles + sizeof($dataFiles);
+}
+
+// Counter for processed files
+$fileCounter = 0;
+
+// Counter for 'B' records processed
+$recordCounter = 0;
+
 // Add each years data to db
 for ($a = 0; $a < sizeof($years); $a++) {
 
@@ -49,7 +67,7 @@ for ($a = 0; $a < sizeof($years); $a++) {
     for ($b = 0; $b < sizeof($dataFiles); $b++) {
 
         // Get the data file and convert to array
-        print($b + 1 . " of " . sizeof($dataFiles) . " - " . $dataFiles[$b]);
+        print($fileCounter . " of " . $numOfFiles . " - " . $dataFiles[$b]);
         $data = csvToArray('data/' . $years[$a] . "/" . $dataFiles[$b]);
 
         // Find the 'B' records and add to db
@@ -86,11 +104,19 @@ for ($a = 0; $a < sizeof($years); $a++) {
                     // DealingNumber
                     $data[$c][23]
                 );
+                $recordCounter++;
             }
         }
+        $fileCounter++;
         print("\n");
     }
 }
+
+// Show program run time and stats
+$finishTime = date_create_from_format("U", time());
+$runTime = date_diff($startTime, $finishTime);
+$rt = $runTime->format("%H:%i:%s");
+print("\n\n--------------\nAll done\n--------------\n\nProgram run time = $rt\nFiles processed: $fileCounter of $numOfFiles\nRecords processed: $recordCounter");
 
 /**
  * Get the list of data file names
@@ -144,8 +170,9 @@ function sendToDb(
     try {
         $pdo->exec($insert);
     } catch (PDOException $e) {
-        print("\n$datafileName - DUPLICATE RECORD FOUND for $dealingNumber & $propertyId - Check db.log");
-        logWriter($datafileName.",". $dealingNumber."," . $propertyId.",".$contractDate.",".$settlementDate.",".$purchasePrice."\n");
+        // There are many duplicate records in dataset. Add duplicates to a csv file for later review.
+        print("\n$datafileName - DUPLICATE RECORD FOUND for $dealingNumber & $propertyId - Refer to createdb.log");
+        logWriter($datafileName . "," . $dealingNumber . "," . $propertyId . "," . $contractDate . "," . $settlementDate . "," . $purchasePrice . "\n");
     }
 }
 

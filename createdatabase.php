@@ -6,25 +6,27 @@ use App\SQLiteConnection;
 use App\SQLiteCreateTable;
 
 /**
- * This script adds NSW property sales data for 2020; 2021; 2022 to an SQLite3 db - db/NSWSalesData.db
+ * NSW Property Sales 2017-2022
+ * 
+ * This script adds NSW property sales data for 2017-2022 to an SQLite3 db - db/NSWSalesData.db
  * Data downloaded from Valuer General NSW Valuation Portal: https://valuation.property.nsw.gov.au/embed/propertySalesInformation
  * 
- * WARNING: This operation may take a long time!
+ * WARNING: This operation will take a long time!
  * 
  * This software is the original academic work of Ian McEwaine s3863018@student.rmit.edu.au
  * It has been prepared as market research material for COSC2454 Professional Computing Practice, RMIT University
  * @ Ian McElwaine 2023
  */
 
-print("----------------------------------------\nThis script will convert the NSW property sales data files into an SQLite3 db\nWARNING: THIS MAY TAKE A LONG TIME!\nPress ctrl-c to escape this operation\n----------------------------------------\n");
+print("----------------------------------------\nNSW Property Sales Records 2017-2022\n\nThis script converts the NSW property sales\ndata files into an SQLite3 db\nWARNING: THIS WILL TAKE A LONG TIME!\nPress ctrl-c to escape this operation\n----------------------------------------\n");
 
 // Sales data years to import 
-$years = array("2020", "2021", "2022");
+$years = array("2017", "2018", "2019", "2020", "2021", "2022");
 
 // Get the db connection
 $pdo = (new SQLiteConnection())->connect();
 
-// Create the tables in the database
+// Create the table in the database
 (new SQLiteCreateTable($pdo))->createTable();
 
 // Initialise log file
@@ -55,9 +57,7 @@ for ($a = 0; $a < sizeof($years); $a++) {
                     // Active db connection
                     $pdo,
                     // Data file name for logging
-                    'data/' . $years[$a] . "/" . $dataFiles[$b],
-                    // The year of the data file
-                    $years[$a],
+                    $years[$a] . "/" . $dataFiles[$b],
                     // PropertyId
                     $data[$c][2],
                     // PropertyLocality
@@ -106,7 +106,6 @@ function getFileNames($year)
 function sendToDb(
     $pdo,
     $datafileName,
-    $year,
     $propertyId,
     $propertyLocality,
     $propertyPostCode,
@@ -140,7 +139,7 @@ function sendToDb(
 
     // Execute statement
     try {
-        $stmt = $pdo->exec($insert);
+        $pdo->exec($insert);
     } catch (PDOException $e) {
         print("\n$datafileName - DUPLICATE RECORD FOUND for $dealingNumber & $propertyId - Check db.log");
         logWriter($datafileName.",". $dealingNumber."," . $propertyId.",".$contractDate.",".$settlementDate.",".$purchasePrice."\n");

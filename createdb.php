@@ -67,7 +67,7 @@ for ($a = 0; $a < sizeof($years); $a++) {
     for ($b = 0; $b < sizeof($dataFiles); $b++) {
 
         // Get the data file and convert to array
-        print($fileCounter . " of " . $numOfFiles . " - " . $dataFiles[$b]);
+        print($fileCounter + 1 . " of " . $numOfFiles . " - " . $dataFiles[$b]);
         $data = csvToArray('data/' . $years[$a] . "/" . $dataFiles[$b]);
 
         // Find the 'B' records and add to db

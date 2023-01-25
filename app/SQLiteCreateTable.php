@@ -30,7 +30,7 @@ class SQLiteCreateTable
     {
         $command =
             'CREATE TABLE IF NOT EXISTS `' . $year . '` (
-                        PropertyId TEXT PRIMARY KEY,
+                        PropertyId TEXT NOT NULL,
                         PropertyLocality TEXT NOT NULL,
                         PropertyPostCode INTEGER NOT NULL,
                         Area REAL,
@@ -41,7 +41,8 @@ class SQLiteCreateTable
                         NatureOfProperty TEXT,
                         PrimaryPurpose TEXT,
                         PercentInterestOfSale TEXT,
-                        DealingNumber TEXT PRIMARY KEY
+                        DealingNumber TEXT NOT NULL,
+                        PRIMARY KEY(PropertyId,DealingNumber)
                       )';
 
         $this->pdo->exec($command);

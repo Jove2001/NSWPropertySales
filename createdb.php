@@ -24,7 +24,7 @@ $startTime = date_create_from_format("U", time());
 print("----------------------------------------\nNSW Property Sales Records 2017-2022\n\nThis script converts the NSW property sales\ndata files into an SQLite3 db\n\nWARNING: THIS WILL TAKE A LONG TIME!\n\nPress ctrl-c to escape this operation\n----------------------------------------\n");
 
 // Sales data years to import 
-$years = array("2017", "2018", "2019", "2020", "2021", "2022");
+$years = array("2017", "2018", "2019", "2020", "2021", "2022", "2023");
 
 // Create dir for db
 if (!file_exists("db")) mkdir("db");

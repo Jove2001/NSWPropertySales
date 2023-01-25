@@ -4,6 +4,7 @@ namespace App;
 
 /**
  * SQLite Create Data Tables
+ * Based on 
  */
 class SQLiteCreateTable
 {
@@ -40,7 +41,7 @@ class SQLiteCreateTable
                         NatureOfProperty TEXT,
                         PrimaryPurpose TEXT,
                         PercentInterestOfSale TEXT,
-                        DealingNumber TEXT
+                        DealingNumber TEXT PRIMARY KEY
                       )';
 
         $this->pdo->exec($command);

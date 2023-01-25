@@ -23,6 +23,8 @@ $years = array("2020", "2021", "2022");
 
 // Get the db connection
 $pdo = (new SQLiteConnection())->connect();
+
+// Create the tables in the database
 $createTables = new SQLiteCreateTable($pdo);
 
 // Create tables

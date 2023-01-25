@@ -116,7 +116,7 @@ for ($a = 0; $a < sizeof($years); $a++) {
 $finishTime = date_create_from_format("U", time());
 $runTime = date_diff($startTime, $finishTime);
 $rt = $runTime->format("%H:%i:%s");
-print("\n\n--------------\nAll done\n--------------\n\nProgram run time = $rt\nFiles processed: $fileCounter of $numOfFiles\nRecords processed: $recordCounter");
+print("\n\n--------------\nAll done\n--------------\n\nProgram run time = $rt\nFiles processed: $fileCounter of $numOfFiles\n'B' Records processed: $recordCounter\nSee createdb.log for duplicate records in original dataset\n\n--------------\n\n");
 
 /**
  * Get the list of data file names
@@ -171,7 +171,6 @@ function sendToDb(
         $pdo->exec($insert);
     } catch (PDOException $e) {
         // There are many duplicate records in dataset. Add duplicates to a csv file for later review.
-        print("\n$datafileName - DUPLICATE RECORD FOUND for $dealingNumber & $propertyId - Refer to createdb.log");
         logWriter($datafileName . "," . $dealingNumber . "," . $propertyId . "," . $contractDate . "," . $settlementDate . "," . $purchasePrice . "\n");
     }
 }
@@ -189,11 +188,12 @@ function csvToArray($csvFile)
 
     // Get rid of the boolean at the end
     array_pop($lines);
+
     return $lines;
 }
 
 /**
- * Write error logs
+ * Write logs
  */
 function logWriter($log)
 {

@@ -4,7 +4,7 @@ namespace App;
 
 /**
  * SQLite Create Data Tables
- * Based on 
+ * Based on https://www.sqlitetutorial.net/sqlite-php/connect/
  */
 class SQLiteCreateTable
 {
@@ -24,7 +24,7 @@ class SQLiteCreateTable
     }
 
     /**
-     * Create tables 
+     * Create table
      */
     public function createTable()
     {

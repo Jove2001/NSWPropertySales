@@ -3,6 +3,7 @@ namespace App;
 
 /**
  * SQLite connnection
+ * Based on https://www.sqlitetutorial.net/sqlite-php/connect/
  */
 class SQLiteConnection {
     /**

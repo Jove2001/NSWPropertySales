@@ -26,22 +26,23 @@ class SQLiteCreateTable
     /**
      * Create tables 
      */
-    public function createTables($year)
+    public function createTable()
     {
         $command =
-            'CREATE TABLE IF NOT EXISTS `' . $year . '` (
+            'CREATE TABLE IF NOT EXISTS NSWPropertySales (
                         PropertyId TEXT NOT NULL,
                         PropertyLocality TEXT NOT NULL,
                         PropertyPostCode INTEGER NOT NULL,
                         Area REAL,
                         AreaType TEXT,
-                        ContractData INTEGER,
+                        ContractDate INTEGER,
                         SettlementDate INTEGER,
                         PurchasePrice INTEGER,
                         NatureOfProperty TEXT,
                         PrimaryPurpose TEXT,
                         PercentInterestOfSale TEXT,
                         DealingNumber TEXT NOT NULL,
+                        DataFileOrigin TEXT,
                         PRIMARY KEY(PropertyId,DealingNumber)
                       )';
 

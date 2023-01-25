@@ -25,12 +25,12 @@ $years = array("2020", "2021", "2022");
 $pdo = (new SQLiteConnection())->connect();
 
 // Create the tables in the database
-$createTables = new SQLiteCreateTable($pdo);
+(new SQLiteCreateTable($pdo))->createTable();
 
-// Create tables
-for ($i = 0; $i < 3; $i++) {
-    $createTables->createTables($years[$i]);
-}
+// Initialise log file
+$logfile = fopen("db.log", "w") or die("Unable to open file!");
+fwrite($logfile, "DataFilePath,DealingNumber,PropertyId,ContractDate,SettlementDate,PurchasePrice\n");
+fclose($logfile);
 
 // Add each years data to db
 for ($a = 0; $a < sizeof($years); $a++) {
@@ -54,9 +54,9 @@ for ($a = 0; $a < sizeof($years); $a++) {
                 sendToDb(
                     // Active db connection
                     $pdo,
-                    // Data file name for error handling
+                    // Data file name for logging
                     'data/' . $years[$a] . "/" . $dataFiles[$b],
-                    // The year of the data
+                    // The year of the data file
                     $years[$a],
                     // PropertyId
                     $data[$c][2],
@@ -122,7 +122,7 @@ function sendToDb(
 ) {
     // Create the SQL statement
     $insert =
-        "INSERT INTO `$year`
+        "INSERT INTO NSWPropertySales
     VALUES (
         '$propertyId',
         '$propertyLocality',
@@ -135,14 +135,15 @@ function sendToDb(
         '$natureOfProperty',
         '$primaryPurpose',
         '$percentInterestOfSale',
-        '$dealingNumber')";
+        '$dealingNumber',
+        '$datafileName')";
 
     // Execute statement
     try {
         $stmt = $pdo->exec($insert);
     } catch (PDOException $e) {
-        print("\n$datafileName - DUPLICATE RECORD FOUND for $dealingNumber - Check db.log");
-        logWriter($datafileName.",". $dealingNumber."," . $propertyId."\n");
+        print("\n$datafileName - DUPLICATE RECORD FOUND for $dealingNumber & $propertyId - Check db.log");
+        logWriter($datafileName.",". $dealingNumber."," . $propertyId.",".$contractDate.",".$settlementDate.",".$purchasePrice."\n");
     }
 }
 

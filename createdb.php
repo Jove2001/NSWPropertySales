@@ -36,13 +36,19 @@ $pdo = (new SQLiteConnection())->connect();
 $createTable = new SQLiteCreateTable($pdo);
 
 // Create the district code table in the database
+print("Creating district code table\n");
 $createTable->createDistrictCodesTable();
+print("District code table created OK\n");
 
 // Add data to the district code table
+print("Adding data to district code table\n");
 addToDistrictCodeTable($pdo);
+print("District code table completed OK\n");
 
 // Create the main table in the database
+print("Creating NSWPropertySales table\n");
 $createTable->createNSWPropertySalesTable();
+print("NSWPropertySales table created OK\n");
 
 // Initialise log file
 $logfile = fopen("createdb.log", "w") or die("Unable to open file!");
@@ -65,9 +71,10 @@ $fileCounter = 0;
 $recordCounter = 0;
 
 // Add each years data to db
+print("Adding data to NSWPropertySales table\n");
 for ($a = 0; $a < sizeof($years); $a++) {
 
-    print("Processing " . $years[$a] . " property sales data\n");
+    print("Processing " . $years[$a] . " dataset\n");
 
     // Get the list of data file names
     $dataFiles = getFileNames($years[$a]);
@@ -140,9 +147,13 @@ function getFileNames($year)
     return $dataFiles;
 }
 
+/**
+ * Add data to district code table
+ * Data sourced from: https://www.valuergeneral.nsw.gov.au/__data/assets/pdf_file/0018/216405/Property_Sales_Data_File_District_Codes_and_Names.pdf
+ */
 function addToDistrictCodeTable($pdo)
 {
-    // Get the data file
+    // Get the data
     $file_to_read = fopen("data/DistrictCodes/DistrictCodes.csv", 'r');
     while (!feof($file_to_read)) {
         $districtCodes[] = fgetcsv($file_to_read, 1000, ',');

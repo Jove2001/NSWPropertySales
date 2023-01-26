@@ -7,8 +7,8 @@ use App\SQLiteConnection;
 /**
  * NSW Property Sales 2017-2022 dataset generator
  * 
- * This script runs the SQL scripts to retrieve NSW property sales data for 2017-2022 from the generated SQLite3 db - db/NSWSalesData.db
- * Creates csv files in csv directory
+ * This script runs the SQL scripts to retrieve NSW property sales data for 2017-2022 from the generated SQLite3 db.
+ * Creates csv files in csv directory.
  * Data downloaded from Valuer General NSW Valuation Portal: https://valuation.property.nsw.gov.au/embed/propertySalesInformation
  * 
  * This software is the original academic work of Ian McEwaine s3863018@student.rmit.edu.au

@@ -32,8 +32,17 @@ if (!file_exists("db")) mkdir("db");
 // Get the db connection
 $pdo = (new SQLiteConnection())->connect();
 
-// Create the table in the database
-(new SQLiteCreateTable($pdo))->createTable();
+// Get the table creator
+$createTable = new SQLiteCreateTable($pdo);
+
+// Create the district code table in the database
+$createTable->createDistrictCodesTable();
+
+// Add data to the district code table
+addToDistrictCodeTable($pdo);
+
+// Create the main table in the database
+$createTable->createNSWPropertySalesTable();
 
 // Initialise log file
 $logfile = fopen("createdb.log", "w") or die("Unable to open file!");
@@ -74,11 +83,13 @@ for ($a = 0; $a < sizeof($years); $a++) {
         // Refer to: https://www.valuergeneral.nsw.gov.au/__data/assets/pdf_file/0015/216402/Current_Property_Sales_Data_File_Format_2001_to_Current.pdf
         for ($c = 0; $c < sizeof($data); $c++) {
             if ($data[$c][0] == "B") {
-                sendToDb(
+                addToPropertySalesTable(
                     // Active db connection
                     $pdo,
                     // Data file name for logging
                     $years[$a] . "/" . $dataFiles[$b],
+                    // DistrictCode
+                    $data[$c][1],
                     // PropertyId
                     $data[$c][2],
                     // PropertyLocality
@@ -129,12 +140,45 @@ function getFileNames($year)
     return $dataFiles;
 }
 
+function addToDistrictCodeTable($pdo)
+{
+    // Get the data file
+    $file_to_read = fopen("data/DistrictCodes/DistrictCodes.csv", 'r');
+    while (!feof($file_to_read)) {
+        $districtCodes[] = fgetcsv($file_to_read, 1000, ',');
+    }
+    fclose($file_to_read);
+
+    // Insert values into db
+    for ($a = 0; $a < sizeof($districtCodes); $a++) {
+
+        // Get the values to insert
+        $code = $districtCodes[$a][0];
+        $district = $districtCodes[$a][1];
+
+        // Create the SQL statement
+        $insert =
+            "INSERT INTO DistrictCodes
+        VALUES (
+            '$code',
+            '$district')";
+
+        // Execute statement
+        try {
+            $pdo->exec($insert);
+        } catch (PDOException $e) {
+            print("There was a problem writing to the database\n" . $e->getMessage() . "\n");
+        }
+    }
+}
+
 /**
- * Insert data into db
+ * Insert data into NSWPropertySales table
  */
-function sendToDb(
+function addToPropertySalesTable(
     $pdo,
     $datafileName,
+    $districtCode,
     $propertyId,
     $propertyLocality,
     $propertyPostCode,
@@ -152,6 +196,7 @@ function sendToDb(
     $insert =
         "INSERT INTO NSWPropertySales
     VALUES (
+        '$districtCode',
         '$propertyId',
         '$propertyLocality',
         '$propertyPostCode',

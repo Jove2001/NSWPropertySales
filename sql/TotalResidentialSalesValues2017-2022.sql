@@ -1,3 +1,5 @@
+-- Find total value of NSW residential sales 2017-2022 where the full interest in the property was sold
+
 SELECT substr(SettlementDate, 0, 5) AS Year,
        SUM(PurchasePrice) AS [Total value of residential sales]
   FROM NSWPropertySales

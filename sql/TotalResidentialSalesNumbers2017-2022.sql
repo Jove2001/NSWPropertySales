@@ -1,3 +1,5 @@
+-- Find total number of NSW residential sales 2017-2022 where the full interest in the property was sold
+
 SELECT substr(SettlementDate, 0, 5) AS Year,
        COUNT(*) AS [Total number of residential sales]
   FROM NSWPropertySales

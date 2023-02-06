@@ -23,3 +23,6 @@ if (!file_exists("csv")) mkdir("csv");
 $pdo = (new SQLiteConnection())->connect();
 
 // TODO: Write this program. Currently running SQL scripts with SQLite Studio to generate CSV files
+
+print("This program has not been implemented. Use command line or SQLite Studio to run SQL files on the database");
+

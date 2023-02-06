@@ -11,7 +11,7 @@ use App\SQLiteCreateTable;
  * This script adds NSW property sales data for 2017-2022 to an SQLite3 db - db/NSWSalesData.db
  * Data downloaded from Valuer General NSW Valuation Portal: https://valuation.property.nsw.gov.au/embed/propertySalesInformation
  * 
- * WARNING: This operation will take a long time!
+ * WARNING: This operation typically takes 1-2hrs depending on the speed of your drive
  * 
  * This software is the original academic work of Ian McEwaine s3863018@student.rmit.edu.au
  * It has been prepared as market research material for COSC2454 Professional Computing Practice, RMIT University
@@ -21,7 +21,7 @@ use App\SQLiteCreateTable;
 // Get program start time
 $startTime = date_create_from_format("U", time());
 
-print("----------------------------------------\nNSW Property Sales Records 2017-2022\n\nThis script converts the NSW property sales\ndata files into an SQLite3 db\n\nWARNING: THIS WILL TAKE A LONG TIME!\n\nPress ctrl-c to escape this operation\n----------------------------------------\n");
+print("----------------------------------------\nNSW Property Sales Records 2017-2022\n\nThis script converts the NSW property sales\ndata files into an SQLite3 db\n\nWARNING: THIS MAY TAKE A LONG TIME!\n\nPress ctrl-c to escape this operation\n----------------------------------------\n");
 
 // Sales data years to import 
 $years = array("2017", "2018", "2019", "2020", "2021", "2022", "2023");
@@ -71,10 +71,10 @@ $fileCounter = 0;
 $recordCounter = 0;
 
 // Add each years data to db
-print("Adding data to NSWPropertySales table\n");
+print("Adding data to NSWPropertySales table");
 for ($a = 0; $a < sizeof($years); $a++) {
 
-    print("Processing " . $years[$a] . " dataset\n");
+    print("\nProcessing " . $years[$a] . " dataset\n");
 
     // Get the list of data file names
     $dataFiles = getFileNames($years[$a]);
@@ -82,8 +82,10 @@ for ($a = 0; $a < sizeof($years); $a++) {
     // Convert to csv and add to db
     for ($b = 0; $b < sizeof($dataFiles); $b++) {
 
-        // Get the data file and convert to array
-        print($fileCounter + 1 . " of " . $numOfFiles . " - " . $dataFiles[$b]);
+		// Print the progress bar
+        print(progressBar($b, sizeof($dataFiles)));
+		
+		// Get the data file and convert to array
         $data = csvToArray('data/' . $years[$a] . "/" . $dataFiles[$b]);
 
         // Find the 'B' records and add to db
@@ -126,7 +128,7 @@ for ($a = 0; $a < sizeof($years); $a++) {
             }
         }
         $fileCounter++;
-        print("\n");
+        // print("\n");
     }
 }
 
@@ -135,6 +137,16 @@ $finishTime = date_create_from_format("U", time());
 $runTime = date_diff($startTime, $finishTime);
 $rt = $runTime->format("%H:%i:%s");
 print("\n\n--------------\nAll done\n--------------\n\nProgram run time = $rt\nFiles processed: $fileCounter of $numOfFiles\n'B' Records processed: $recordCounter\nSee createdb.log for duplicate records in original dataset\n\n--------------\n\n");
+
+/**
+ * Progress bar
+ * From: https://gist.github.com/mayconbordin/2860547
+ */
+function progressBar($done, $total, $info="",$width=50) {
+    $percent = round((($done + 1) * 100) / $total);
+    $bar = round(($width * $percent) / 100);
+    return sprintf("%s%%[%s>%s]%s\r", $percent, str_repeat("=", $bar), str_repeat(" ", $width-$bar), $info);
+}
 
 /**
  * Get the list of data file names
